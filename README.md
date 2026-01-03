@@ -1,6 +1,6 @@
 # PyTorch → TensorRT Mini Benchmark (ResNet-50)
 
-Small, reproducible benchmark that measures **inference latency** for ResNet-50 across:
+Reproducible benchmark that measures **inference latency** for ResNet-50 across:
 - **PyTorch FP32**
 - **PyTorch FP16**
 - **Torch-TensorRT FP16** (optional)
@@ -105,3 +105,36 @@ if __name__=="__main__":
 PY
 
 printf ".venv/\n__pycache__/\n*.pyc\n*.engine\n" > .gitignore
+```
+## Environment
+
+```bash
+# GPU/driver
+nvidia-smi
+
+# Python libs
+python - << 'PY'
+import torch, torchvision
+print("torch:", torch.__version__, "cuda:", torch.version.cuda)
+print("torchvision:", torchvision.__version__)
+try:
+    import torch_tensorrt as trt
+    print("torch_tensorrt:", trt.__version__)
+except Exception as e:
+    print("torch_tensorrt not loaded:", e)
+PY
+```
+- **GPU:** NVIDIA RTX 4000 SFF Ada (20 GB)
+- **Driver:** 560.35.05
+- **CUDA (driver):** 12.6
+- **PyTorch:** 2.4.1 (+cu124)
+- **TorchVision:** 0.19.1
+- **Torch-TensorRT:** tbd
+
+## Results — Latency (ms), batch=32, iters=30
+
+| Mode    | Precision | Batch | p50 (ms) | p95 (ms) | mean (ms) |
+|---------|-----------|------:|---------:|---------:|----------:|
+| PyTorch | FP32      |   32  |  44.076  |  44.108  |   44.076  |
+| PyTorch | FP16      |   32  |  21.758  |  21.816  |   21.767  |
+
